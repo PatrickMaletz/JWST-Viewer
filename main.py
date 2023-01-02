@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import numpy as np
 
 from astropy.visualization import astropy_mpl_style
 from astropy.io import fits
@@ -30,30 +32,27 @@ def main():
         #print(image_data[0])
     
         with fits.open(image) as hdul:
-                #hdul.info()
-                #print(dir(hdul[0]))
-                print(hdul[0].is_image)
+                hdul.info()
+                print(dir(hdul.fileinfo))
+                #print(hdul[0].is_image)
                 #print(image_data)
 
                 image_data = hdul[1].data
-                #print(image_data)
+                image_data -= image_data.min()-0.1
+                zMax = np.max(image_data)
+                print(image_data.min())
+                minValue = 0.1
+                maxValue = image_data.max()
+                #maxValue = 100
                 
                 try:
                     plt.figure()
-                    plt.imshow(image_data, cmap='gray')
-                    plt.colorbar()
+                    plt.imshow(image_data, cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=maxValue))
+                    plt.axis('off')
+                    #plt.colorbar()
                     plt.show()
                 except:
                     print("Failed on: ", image)
-        """    
-             for level in hdul:
-                print(level.header['DATE'])
-                #print(level.data)
-                
-             
-       
-
-        """
 
     return
 
