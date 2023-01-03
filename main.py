@@ -34,11 +34,21 @@ def main():
         with fits.open(image) as hdul:
                 hdul.info()
                 print(dir(hdul.fileinfo))
-                #print(hdul[0].is_image)
-                #print(image_data)
+                hdr = hdul[0].header
+                
+                """
+                print(hdr)
+                for head in hdr:
+                    print(head)
+
+                print("OBS_ID ",hdr['OBS_ID'])
+
+                print(hdul[0].is_image)
+                """
+                print(image_data)
 
                 image_data = hdul[1].data
-                image_data -= image_data.min()-0.1
+                image_data -= image_data.min()
                 zMax = np.max(image_data)
                 print(image_data.min())
                 minValue = 0.1
