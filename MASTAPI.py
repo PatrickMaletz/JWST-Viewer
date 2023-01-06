@@ -12,20 +12,23 @@ end_date_mjd = Time(end_date, format='iso', scale='utc').mjd
 metaDATA = Observations.get_metadata('observations')
 
 
-for meta in metaDATA:
-    print(meta)
+#for meta in metaDATA:
+#    print(meta)
 
 #print(obs_table[:10])  
 
-single_obs = Observations.query_criteria(dataRights = 'PUBLIC', obs_collection='JWST', t_obs_release = [start_date_mjd,end_date_mjd], instrument_name = 'Nircam', calib_level = 3)
+single_obs = Observations.query_criteria(dataRights = 'PUBLIC', obs_collection='JWST', t_obs_release = [start_date_mjd,end_date_mjd], instrument_name = 'Nircam', calib_level = 3, filters = ['F115W','F356W','F444W'])
 
 data_products = Observations.get_product_list(single_obs)
 
-print(data_products)
+#print(data_products.keys)
+for key in data_products[0].keys():
+    print(key)
 
 for data in data_products:
-    if 'i2d.jpg' in data['productFilename']:
-        print(data['productFilename'])
+    #print("Keys: ",data.keys)
+    if 'i2d.fits' in data['productFilename']:
+        print(data["obs_id"])
         product = data["dataURI"]
         print(product)
 
