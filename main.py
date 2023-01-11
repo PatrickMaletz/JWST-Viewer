@@ -5,7 +5,9 @@ import numpy as np
 from astropy.visualization import astropy_mpl_style
 from astropy.io import fits
 from astropy.utils.data import get_pkg_data_filename
+from astropy.visualization import make_lupton_rgb
 
+from reproject import reproject_interp
 
 import os
 # assign directory
@@ -24,6 +26,7 @@ def main():
     images = get_files(directory)
 
     list_of_images = []
+    hdul_list = []
     max_values = []
     minValue = 0.1
 
@@ -34,7 +37,7 @@ def main():
         print(type(image_data))
         #fits.info(image)
         #print(image_data[0])
-    
+
         with fits.open(image) as hdul:
                 hdul.info()
                 print(dir(hdul.fileinfo))
@@ -57,10 +60,11 @@ def main():
                 image_data -= image_data.min()
 
                 list_of_images.append(image_data)
+                hdul_list.append(hdul[1]) 
                 zMax = np.max(image_data)
                 max_values.append(zMax)
 
-                print(image_data.min())
+                #print(image_data.min())
                 
                 maxValue = image_data.max()
                 #maxValue = 100
@@ -73,17 +77,38 @@ def main():
                     plt.show()
                 except:
                     print("Failed on: ", image)
-                    """
-    new_image = np.add(list_of_images[0],list_of_images[1])
-    plt.figure()
-    #plt.imshow(list_of_images[0], cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=list_of_images[0].max()))
-    #plt.imshow(list_of_images[0], cmap='hot', vmin = minValue, vmax = 10)
-    plt.imshow(list_of_images[1], cmap='RdGy', vmin = minValue, vmax = 100)
-    
-    plt.axis('off')
-    #plt.colorbar()
+                """
+
+    for image in list_of_images:
+        print(image.shape)
+
+    hdu1 = fits.open(images[0])[1]
+    hdu2 = fits.open(images[1])[1]
+    hdu3 = fits.open(images[2])[1]
+    array1, footprint = reproject_interp(hdu2, hdu1.header)
+    array2, footprint = reproject_interp(hdu3, hdu1.header)
+
+    g = list_of_images[0]
+    r = array1
+    i = array2
+
+    #g = list_of_images[0]
+   
+    rgb_default = make_lupton_rgb(i, r, g, Q=1, stretch=0.1)
+    #plt.imshow(array, cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=maxValue))
+    plt.imshow(rgb_default, origin='lower')
     plt.show()
-        
+
+    rgb_default = make_lupton_rgb(i, r, g, Q=1, stretch=0.5)
+    #plt.imshow(array, cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=maxValue))
+    plt.imshow(rgb_default, origin='lower')
+    plt.show()
+    
+    rgb_default = make_lupton_rgb(i, r, g, Q=1, stretch=1.0)
+    #plt.imshow(array, cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=maxValue))
+    plt.imshow(rgb_default, origin='lower')
+    plt.show()
+    
     return
 
 def get_files(directory):

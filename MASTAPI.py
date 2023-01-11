@@ -3,8 +3,8 @@
 from astroquery.mast import Observations
 from astropy.time import Time
 
-start_date = "2022-12-16 00:00:00"
-end_date = "2022-12-17 00:00:00"
+start_date = "2022-12-22 00:00:00"
+end_date = "2022-12-23 00:00:00"
 start_date_mjd = Time(start_date, format='iso', scale='utc').mjd
 end_date_mjd = Time(end_date, format='iso', scale='utc').mjd
 
@@ -17,20 +17,23 @@ metaDATA = Observations.get_metadata('observations')
 
 #print(obs_table[:10])  
 
-single_obs = Observations.query_criteria(dataRights = 'PUBLIC', obs_collection='JWST', t_obs_release = [start_date_mjd,end_date_mjd], instrument_name = 'Nircam', calib_level = 3, filters = ['F115W','F356W','F444W'])
+#filters = ['F115W','F356W','F444W']
+single_obs = Observations.query_criteria(dataRights = 'PUBLIC', obs_collection='JWST', t_obs_release = [start_date_mjd,end_date_mjd], instrument_name = 'Nircam', calib_level = 3)
 
 data_products = Observations.get_product_list(single_obs)
 
+print("Hellllooooo")
 #print(data_products.keys)
 for key in data_products[0].keys():
     print(key)
+    print(data_products[0][key])
 
 for data in data_products:
     #print("Keys: ",data.keys)
-    if 'i2d.fits' in data['productFilename']:
+    if 'w_i2d.fits' in data['productFilename']:
         print(data["obs_id"])
         product = data["dataURI"]
-        print(product)
+        #print(product)
 
 
         result = Observations.download_file(product)   
@@ -39,23 +42,6 @@ for data in data_products:
 
 
 """
-data_product_1 = data_products[10]
-
-
-for data in data_product_1:
-    print(data)
-
-
-product = data_product_1["dataURI"]
-
-print(product)
-
-
-result = Observations.download_file(product)   
-
-print(result)
-
-
 
 dataproduct_type = 'SCIENCE'
 obs_collection='HST'
