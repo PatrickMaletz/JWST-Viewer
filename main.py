@@ -68,7 +68,7 @@ def main():
                 
                 maxValue = image_data.max()
                 #maxValue = 100
-                """
+                
                 try:
                     plt.figure()
                     plt.imshow(image_data, cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=maxValue))
@@ -77,7 +77,7 @@ def main():
                     plt.show()
                 except:
                     print("Failed on: ", image)
-                """
+                
 
     for image in list_of_images:
         print(image.shape)
@@ -94,19 +94,11 @@ def main():
 
     #g = list_of_images[0]
    
-    rgb_default = make_lupton_rgb(i, r, g, Q=1, stretch=0.1)
-    #plt.imshow(array, cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=maxValue))
-    plt.imshow(rgb_default, origin='lower')
-    plt.show()
 
-    rgb_default = make_lupton_rgb(i, r, g, Q=1, stretch=0.5)
+
+    rgb_default = make_lupton_rgb(i, r, g, Q=0.001, stretch=300)
     #plt.imshow(array, cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=maxValue))
-    plt.imshow(rgb_default, origin='lower')
-    plt.show()
-    
-    rgb_default = make_lupton_rgb(i, r, g, Q=1, stretch=1.0)
-    #plt.imshow(array, cmap='gray', norm=colors.LogNorm(vmin=minValue, vmax=maxValue))
-    plt.imshow(rgb_default, origin='lower')
+    plt.imshow(rgb_default, origin='lower', vmin = 0, vmax = 15)
     plt.show()
     
     return

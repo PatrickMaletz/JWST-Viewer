@@ -19,7 +19,20 @@ metaDATA = Observations.get_metadata('observations')
 
 #filters = ['F115W','F356W','F444W']
 single_obs = Observations.query_criteria(dataRights = 'PUBLIC', obs_collection='JWST', t_obs_release = [start_date_mjd,end_date_mjd], instrument_name = 'Nircam', calib_level = 3)
+targets = []
+download_path = '/home/pat/repos/JWSTViewer/test-images/'
+for obs in single_obs:
+    print("Size: ", obs['jpegURL'])
+    coordinate = [obs['s_ra'],obs['s_dec']]
+    if not coordinate in targets:
+        targets.append(coordinate)
+    result = Observations.download_file(obs['jpegURL'],local_path = (download_path+obs['obs_id']+'.jpg'))
+    print(result)
+    #print(obs['s_ra'],obs['s_dec'])
+    #print(obs['obs_id'])
 
+
+print("Targets: ", targets)
 data_products = Observations.get_product_list(single_obs)
 
 print("Hellllooooo")
@@ -33,12 +46,13 @@ for data in data_products:
     if 'w_i2d.fits' in data['productFilename']:
         print(data["obs_id"])
         product = data["dataURI"]
-        #print(product)
+        
+        print(product)
 
 
-        result = Observations.download_file(product)   
+        #result = Observations.download_file(product)   
 
-        print(result)
+        #print(result)
 
 
 """
